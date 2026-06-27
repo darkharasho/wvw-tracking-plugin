@@ -1,0 +1,15 @@
+{
+  "name": "darkharasho/wvw-tracking-plugin",
+  "description": "GW2 WvW matchup shortcodes for WordPress",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "require": {
+    "php": ">=7.4"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^11"
+  },
+  "autoload-dev": {
+    "classmap": ["includes/class-wvw-data.php", "includes/class-wvw-names.php"]
+  }
+}
