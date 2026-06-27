@@ -29,6 +29,9 @@ require_once WVW_PATH . 'includes/class-wvw-api.php';
 require_once WVW_PATH . 'includes/class-wvw-rest.php';
 require_once WVW_PATH . 'includes/class-wvw-render.php';
 require_once WVW_PATH . 'includes/class-wvw-shortcodes.php';
+require_once WVW_PATH . 'includes/class-wvw-settings.php';
+add_action('admin_menu', ['WVW_Settings', 'menu']);
+add_action('admin_init', ['WVW_Settings', 'register']);
 add_action('rest_api_init', ['WVW_Rest', 'register']);
 add_action('init', ['WVW_Shortcodes', 'register']);
 add_action('wp_enqueue_scripts', function () {
