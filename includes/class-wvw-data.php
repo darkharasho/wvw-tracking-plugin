@@ -86,4 +86,75 @@ class WVW_Data {
         }
         return $out;
     }
+
+    public static function find_match(array $matches, array $args) {
+        if (!empty($args['match'])) {
+            foreach ($matches as $m) {
+                if (isset($m['id']) && (string) $m['id'] === (string) $args['match']) {
+                    return $m;
+                }
+            }
+            return null;
+        }
+        if (!empty($args['team'])) {
+            $team = (int) $args['team'];
+            foreach ($matches as $m) {
+                $aw = isset($m['all_worlds']) ? $m['all_worlds'] : [];
+                foreach (['red', 'green', 'blue'] as $color) {
+                    $ids = isset($aw[$color]) ? array_map('intval', $aw[$color]) : [];
+                    if (in_array($team, $ids, true)) {
+                        return $m;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public static function tier_number(array $match) {
+        $id = isset($match['id']) ? (string) $match['id'] : '';
+        $pos = strpos($id, '-');
+        return $pos === false ? 0 : (int) substr($id, $pos + 1);
+    }
+
+    /** Colors ordered by victory points desc; tie-break war score desc, then fixed order. */
+    public static function rank(array $match) {
+        $vp = self::victory_points($match);
+        $sc = self::scores($match);
+        $order = ['red' => 0, 'green' => 1, 'blue' => 2];
+        $colors = ['red', 'green', 'blue'];
+        usort($colors, function ($a, $b) use ($vp, $sc, $order) {
+            if ($vp[$a] !== $vp[$b]) { return $vp[$b] - $vp[$a]; }
+            if ($sc[$a] !== $sc[$b]) { return $sc[$b] - $sc[$a]; }
+            return $order[$a] - $order[$b];
+        });
+        return $colors;
+    }
+
+    public static function movement(array $match, $isTopTier, $isBottomTier) {
+        $ranked = self::rank($match); // [1st, 2nd, 3rd]
+        $verdict = [];
+        $verdict[$ranked[0]] = $isTopTier ? 'stays' : 'up';
+        $verdict[$ranked[1]] = 'stays';
+        $verdict[$ranked[2]] = $isBottomTier ? 'stays' : 'down';
+        // Return in fixed display order so equality checks are deterministic.
+        return [
+            'red'   => $verdict['red'],
+            'green' => $verdict['green'],
+            'blue'  => $verdict['blue'],
+        ];
+    }
+
+    public static function kdr($kills, $deaths) {
+        $kills = (int) $kills; $deaths = (int) $deaths;
+        if ($deaths === 0) { return (float) $kills; }
+        return round($kills / $deaths, 2);
+    }
+
+    public static function ppk($kills, $deaths) {
+        $kills = (int) $kills; $deaths = (int) $deaths;
+        $total = $kills + $deaths;
+        if ($total === 0) { return 0.0; }
+        return round($kills / $total * 100, 2);
+    }
 }
