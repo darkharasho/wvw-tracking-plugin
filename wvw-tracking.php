@@ -27,7 +27,13 @@ require_once WVW_PATH . 'includes/class-wvw-names.php';
 // class-wvw-shortcodes, class-wvw-settings — and their bootstrap wiring.
 require_once WVW_PATH . 'includes/class-wvw-api.php';
 require_once WVW_PATH . 'includes/class-wvw-rest.php';
+require_once WVW_PATH . 'includes/class-wvw-render.php';
+require_once WVW_PATH . 'includes/class-wvw-shortcodes.php';
 add_action('rest_api_init', ['WVW_Rest', 'register']);
+add_action('init', ['WVW_Shortcodes', 'register']);
+add_action('wp_enqueue_scripts', function () {
+    wp_enqueue_style('wvw-tracking', WVW_URL . 'assets/wvw.css', [], WVW_VERSION);
+});
 
 add_filter('cron_schedules', ['WVW_Api', 'add_schedule']);
 add_action(WVW_Api::CRON_HOOK, ['WVW_Api', 'refresh']);
