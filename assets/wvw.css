@@ -11,11 +11,13 @@
 .wvw-unavailable { padding: .75em; color: #777; font-style: italic; }
 
 /* Region ladder — wvw.gg-style dark table */
-.wvw-standings { border: 0; background: #0e1726; color: #d8dee9; border-radius: 10px; }
-.wvw-standings table { font-variant-numeric: tabular-nums; }
+/* overflow-x:auto lets the 9-column table scroll on narrow theme columns
+   instead of squashing/clipping (overrides .wvw-widget's overflow:hidden). */
+.wvw-standings { border: 0; background: #0e1726; color: #d8dee9; border-radius: 10px; overflow-x: auto; }
+.wvw-standings table { font-variant-numeric: tabular-nums; min-width: 680px; }
 .wvw-standings thead th { font-size: .72em; letter-spacing: .04em; text-transform: uppercase;
   color: #8a94a6; border-bottom: 1px solid #233048; }
-.wvw-standings td, .wvw-standings th { border-bottom: 1px solid #1a2740; text-align: right; }
+.wvw-standings td, .wvw-standings th { border-bottom: 1px solid #1a2740; text-align: right; white-space: nowrap; }
 .wvw-standings th:first-child, .wvw-standings .wvw-team-cell { text-align: left; }
 .wvw-standings .wvw-tier { font-size: 1.1em; font-weight: 700; text-align: center; color: #c9d3e3;
   border-right: 1px solid #233048; vertical-align: middle; }
