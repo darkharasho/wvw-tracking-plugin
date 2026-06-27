@@ -1,0 +1,41 @@
+name: Build plugin zip on tag
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Stage plugin files
+        run: |
+          # WordPress expects the plugin inside its own folder, so the zip
+          # must contain a top-level `wvw-tracking/` directory. Only ship
+          # runtime files — no dev/test/docs artifacts.
+          mkdir -p build/wvw-tracking
+          cp wvw-tracking.php build/wvw-tracking/
+          cp README.md build/wvw-tracking/
+          cp -r includes build/wvw-tracking/
+          cp -r assets build/wvw-tracking/
+
+      - name: Create zip
+        run: |
+          cd build
+          zip -r "../wvw-tracking-${GITHUB_REF_NAME}.zip" wvw-tracking
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            "wvw-tracking-${GITHUB_REF_NAME}.zip" \
+            --title "${GITHUB_REF_NAME}" \
+            --generate-notes
