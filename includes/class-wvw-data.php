@@ -117,6 +117,24 @@ class WVW_Data {
         return $pos === false ? 0 : (int) substr($id, $pos + 1);
     }
 
+    /** Restructured-team IDs (World Restructuring) start at this id. */
+    const WR_TEAM_ID_MIN = 10000;
+
+    /**
+     * The team identifier to name a side by. Prefers the World Restructuring
+     * team id (>= WR_TEAM_ID_MIN) found in all_worlds[$color]; falls back to the
+     * legacy main world id in worlds[$color].
+     */
+    public static function team_id(array $match, $color) {
+        $aw = isset($match['all_worlds'][$color]) ? $match['all_worlds'][$color] : [];
+        foreach ($aw as $id) {
+            if ((int) $id >= self::WR_TEAM_ID_MIN) {
+                return (int) $id;
+            }
+        }
+        return (int) (isset($match['worlds'][$color]) ? $match['worlds'][$color] : 0);
+    }
+
     /** Colors ordered by victory points desc; tie-break war score desc, then fixed order. */
     public static function rank(array $match) {
         $vp = self::victory_points($match);

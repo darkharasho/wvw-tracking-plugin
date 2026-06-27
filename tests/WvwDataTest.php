@@ -15,6 +15,17 @@ final class WvwDataTest extends TestCase {
         );
     }
 
+    public function test_team_id_prefers_restructured_id() {
+        // 2-1 red all_worlds [12001, 2001, 2101] -> WR team id 12001
+        $this->assertSame(12001, WVW_Data::team_id($this->match('2-1'), 'red'));
+        $this->assertSame(12003, WVW_Data::team_id($this->match('2-1'), 'green'));
+    }
+
+    public function test_team_id_falls_back_to_world_id() {
+        // 1-1 red has only legacy ids -> falls back to worlds.red (1001)
+        $this->assertSame(1001, WVW_Data::team_id($this->match('1-1'), 'red'));
+    }
+
     public function test_kills() {
         $this->assertSame(
             ['red' => 1000, 'green' => 3000, 'blue' => 2000],

@@ -20,4 +20,16 @@ final class WvwNamesTest extends TestCase {
     public function test_raw_string_key() {
         $this->assertSame('Raw Str', WVW_Names::resolve(2001, [], ['2001' => 'Raw Str']));
     }
+    public function test_built_in_wr_default_used() {
+        // World Restructuring team id with no admin/raw entry -> built-in NA name.
+        $this->assertSame("Rall's Rest", WVW_Names::resolve(11002, [], []));
+        $this->assertSame('Yohlon Haven', WVW_Names::resolve(11004, [], []));
+    }
+    public function test_friendly_overrides_wr_default() {
+        $this->assertSame('My Team', WVW_Names::resolve(11002, [11002 => 'My Team'], []));
+    }
+    public function test_wr_default_beats_raw() {
+        // Built-in WR name takes precedence over a stale /v2/worlds raw name.
+        $this->assertSame("Rall's Rest", WVW_Names::resolve(11002, [], [11002 => 'Old World']));
+    }
 }

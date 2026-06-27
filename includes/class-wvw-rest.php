@@ -29,10 +29,10 @@ class WVW_Rest {
         $friendly = isset($settings['team_names']) && is_array($settings['team_names'])
             ? $settings['team_names'] : [];
         $raw = WVW_Api::get_world_names();
-        $worlds = isset($match['worlds']) ? $match['worlds'] : [];
         $names = [];
         foreach (['red', 'green', 'blue'] as $c) {
-            $id = isset($worlds[$c]) ? $worlds[$c] : 0;
+            // Name by the World Restructuring team id when present, else legacy world id.
+            $id = WVW_Data::team_id($match, $c);
             $names[$c] = WVW_Names::resolve($id, $friendly, $raw);
         }
         $kills  = WVW_Data::kills($match);

@@ -23,6 +23,18 @@ API exposes no PPK field; adjust `WVW_Data::ppk()` if you want a different formu
 Match-scoped shortcodes accept `team="2001"` (auto-follows up/down tiers),
 `match="2-1"` (fixed tier), or fall back to the default team in settings.
 
+## Team names (World Restructuring)
+
+Each side is named by its **World Restructuring team id** (the `>= 11000` entry
+in the API's `all_worlds`), not the legacy world id. The **NA** teams
+(`11001`–`11012`, e.g. *Rall's Rest*, *Yohlon Haven*) are built in — see
+`WVW_Names::wr_defaults()`. ArenaNet publishes no name for these team ids, so:
+
+- To rename a team or add **EU** teams (`12xxx`), use the team-name map under
+  **Settings → WvW Tracking** (keyed by team id) — it overrides the built-ins.
+- Anything still unmapped falls back to the legacy `/v2/worlds` name, then to
+  `Team {id}`, so nothing renders blank.
+
 ## Development
 - `composer install`
 - `vendor/bin/phpunit` — runs the pure-logic unit tests (no WordPress needed).

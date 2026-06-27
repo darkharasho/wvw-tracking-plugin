@@ -2,7 +2,7 @@
   {
     "id": "2-1",
     "worlds": { "red": 2001, "blue": 2002, "green": 2003 },
-    "all_worlds": { "red": [2001, 2101], "blue": [2002], "green": [2003] },
+    "all_worlds": { "red": [12001, 2001, 2101], "blue": [12002, 2002], "green": [12003, 2003] },
     "scores": { "red": 1000, "blue": 2000, "green": 3000 },
     "kills": { "red": 1000, "blue": 2000, "green": 3000 },
     "deaths": { "red": 2000, "blue": 4000, "green": 1000 },
