@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WvW Tracking
  * Description: GW2 World vs World matchup shortcodes (score, PPT, skirmish, objectives, standings).
- * Version: 0.1.0
+ * Version: 0.1.1
  * Author: darkharasho
  * License: GPL-2.0-or-later
  * Text Domain: wvw-tracking
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('WVW_VERSION', '0.1.0');
+define('WVW_VERSION', '0.1.1');
 define('WVW_PATH', plugin_dir_path(__FILE__));
 define('WVW_URL', plugin_dir_url(__FILE__));
 define('WVW_API_URL', 'https://api.guildwars2.com/v2/wvw/matches?ids=all');
