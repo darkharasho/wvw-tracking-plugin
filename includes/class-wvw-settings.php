@@ -47,9 +47,6 @@ class WVW_Settings {
         $region = isset($o['default_region']) ? $o['default_region'] : 'na';
         $interval = isset($o['interval']) ? (int) $o['interval'] : WVW_DEFAULT_INTERVAL;
         $names  = isset($o['team_names']) && is_array($o['team_names']) ? $o['team_names'] : [];
-        // ensure at least 5 blank rows to fill in
-        $rows = $names;
-        for ($i = count($rows); $i < 5; $i++) { $rows[''] = ''; }
         ?>
         <div class="wrap">
             <h1><?php echo esc_html__('WvW Tracking', 'wvw-tracking'); ?></h1>
@@ -81,12 +78,18 @@ class WVW_Settings {
                 <table class="widefat" style="max-width:600px">
                     <thead><tr><th><?php echo esc_html__('World ID', 'wvw-tracking'); ?></th><th><?php echo esc_html__('Friendly name', 'wvw-tracking'); ?></th></tr></thead>
                     <tbody>
-                    <?php foreach ($rows as $id => $nm): ?>
+                    <?php foreach ($names as $id => $nm): ?>
                         <tr>
                             <td><input type="text" name="wvw_settings[team_id][]" value="<?php echo esc_attr($id); ?>" /></td>
                             <td><input type="text" name="wvw_settings[team_name][]" value="<?php echo esc_attr($nm); ?>" /></td>
                         </tr>
                     <?php endforeach; ?>
+                    <?php $blanks = max(0, 5 - count($names)); for ($i = 0; $i < $blanks; $i++): ?>
+                        <tr>
+                            <td><input type="text" name="wvw_settings[team_id][]" value="" /></td>
+                            <td><input type="text" name="wvw_settings[team_name][]" value="" /></td>
+                        </tr>
+                    <?php endfor; ?>
                     </tbody>
                 </table>
                 <?php submit_button(); ?>

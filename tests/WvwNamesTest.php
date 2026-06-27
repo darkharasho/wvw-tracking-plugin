@@ -14,4 +14,10 @@ final class WvwNamesTest extends TestCase {
     public function test_empty_friendly_value_is_ignored() {
         $this->assertSame('Raw Name', WVW_Names::resolve(2001, [2001 => ''], [2001 => 'Raw Name']));
     }
+    public function test_friendly_string_key() {
+        $this->assertSame('Str Name', WVW_Names::resolve(2001, ['2001' => 'Str Name'], []));
+    }
+    public function test_raw_string_key() {
+        $this->assertSame('Raw Str', WVW_Names::resolve(2001, [], ['2001' => 'Raw Str']));
+    }
 }

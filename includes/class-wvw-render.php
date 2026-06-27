@@ -13,7 +13,8 @@ class WVW_Render {
 
     /** $type in score|ppt|skirmish. Renders a three-team row of values. */
     public static function widget($type, array $p) {
-        $values = isset($p[$type]) ? $p[$type] : [];
+        $key = ($type === 'score') ? 'scores' : $type;
+        $values = isset($p[$key]) ? $p[$key] : [];
         $rows = '';
         foreach (self::order() as $c) {
             $name = isset($p['names'][$c]) ? $p['names'][$c] : ucfirst($c);

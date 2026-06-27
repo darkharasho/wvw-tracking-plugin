@@ -73,7 +73,7 @@ class WVW_Api {
                 }
             }
         }
-        set_transient(WVW_WORLDS_KEY, $map, DAY_IN_SECONDS);
+        set_transient(WVW_WORLDS_KEY, $map, !empty($map) ? DAY_IN_SECONDS : 5 * MINUTE_IN_SECONDS);
         return $map;
     }
 

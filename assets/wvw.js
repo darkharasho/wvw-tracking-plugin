@@ -16,7 +16,8 @@
     el.querySelectorAll('.wvw-value[data-team]').forEach(function (node) {
       var team = node.getAttribute('data-team');
       var type = el.getAttribute('data-wvw-type');
-      var map = payload[type];
+      var key = (type === 'score') ? 'scores' : type;
+      var map = payload[key];
       if (map && map[team] != null) { node.textContent = Number(map[team]).toLocaleString(); }
     });
     // kills widget: td[data-team][data-field] where field is a payload key (kills/deaths/kdr)
