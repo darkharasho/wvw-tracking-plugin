@@ -1,0 +1,49 @@
+[
+  {
+    "id": "2-1",
+    "worlds": { "red": 2001, "blue": 2002, "green": 2003 },
+    "all_worlds": { "red": [2001, 2101], "blue": [2002], "green": [2003] },
+    "scores": { "red": 1000, "blue": 2000, "green": 3000 },
+    "kills": { "red": 1000, "blue": 2000, "green": 3000 },
+    "deaths": { "red": 2000, "blue": 4000, "green": 1000 },
+    "victory_points": { "red": 30, "blue": 20, "green": 50 },
+    "skirmishes": [
+      { "id": 1, "scores": { "red": 50, "blue": 60, "green": 70 } },
+      { "id": 2, "scores": { "red": 11, "blue": 22, "green": 33 } }
+    ],
+    "maps": [
+      {
+        "id": 38, "type": "Center",
+        "objectives": [
+          { "id": "38-1", "type": "Camp",   "owner": "Red",   "points_tick": 2 },
+          { "id": "38-2", "type": "Tower",  "owner": "Blue",  "points_tick": 4 },
+          { "id": "38-3", "type": "Keep",   "owner": "Green", "points_tick": 8 },
+          { "id": "38-4", "type": "Castle", "owner": "Red",   "points_tick": 12 },
+          { "id": "38-5", "type": "Camp",   "owner": "Neutral","points_tick": 0 }
+        ]
+      },
+      {
+        "id": 95, "type": "RedHome",
+        "objectives": [
+          { "id": "95-1", "type": "Tower", "owner": "Red", "points_tick": 4 },
+          { "id": "95-2", "type": "Camp",  "owner": "Red", "points_tick": 2 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "1-1",
+    "worlds": { "red": 1001, "blue": 1002, "green": 1003 },
+    "all_worlds": { "red": [1001], "blue": [1002], "green": [1003] },
+    "scores": { "red": 9, "blue": 8, "green": 7 },
+    "kills": { "red": 5, "blue": 6, "green": 7 },
+    "deaths": { "red": 7, "blue": 6, "green": 5 },
+    "victory_points": { "red": 21, "blue": 32, "green": 43 },
+    "skirmishes": [ { "id": 1, "scores": { "red": 1, "blue": 2, "green": 3 } } ],
+    "maps": [
+      { "id": 38, "type": "Center", "objectives": [
+        { "id": "38-1", "type": "Keep", "owner": "Blue", "points_tick": 8 }
+      ] }
+    ]
+  }
+]
