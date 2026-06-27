@@ -36,6 +36,11 @@ add_action('rest_api_init', ['WVW_Rest', 'register']);
 add_action('init', ['WVW_Shortcodes', 'register']);
 add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('wvw-tracking', WVW_URL . 'assets/wvw.css', [], WVW_VERSION);
+    wp_enqueue_script('wvw-tracking', WVW_URL . 'assets/wvw.js', [], WVW_VERSION, true);
+    wp_localize_script('wvw-tracking', 'wvwConfig', [
+        'root'     => esc_url_raw(rest_url()),
+        'interval' => WVW_Api::interval(),
+    ]);
 });
 
 add_filter('cron_schedules', ['WVW_Api', 'add_schedule']);
