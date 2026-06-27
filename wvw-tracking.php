@@ -26,6 +26,8 @@ require_once WVW_PATH . 'includes/class-wvw-names.php';
 // Later tasks add: class-wvw-api, class-wvw-rest, class-wvw-render,
 // class-wvw-shortcodes, class-wvw-settings — and their bootstrap wiring.
 require_once WVW_PATH . 'includes/class-wvw-api.php';
+require_once WVW_PATH . 'includes/class-wvw-rest.php';
+add_action('rest_api_init', ['WVW_Rest', 'register']);
 
 add_filter('cron_schedules', ['WVW_Api', 'add_schedule']);
 add_action(WVW_Api::CRON_HOOK, ['WVW_Api', 'refresh']);
