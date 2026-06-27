@@ -26,13 +26,14 @@ Match-scoped shortcodes accept `team="2001"` (auto-follows up/down tiers),
 ## Team names (World Restructuring)
 
 Each side is named by its **World Restructuring team id** (the `>= 11000` entry
-in the API's `all_worlds`), not the legacy world id. The **NA** teams
-(`11001`–`11012`, e.g. *Rall's Rest*, *Yohlon Haven*) are built in — see
-`WVW_Names::wr_defaults()`. ArenaNet publishes no name for these team ids, so:
+in the API's `all_worlds`), not the legacy world id. ArenaNet publishes no name
+for these team ids, so **NA (`11xxx`), EU (`12xxx`), and CN (`18xxx`)** team
+names are built in — see `WVW_Names::wr_defaults()` (sourced from
+[Drevarr/GW2-WVW-Teams](https://github.com/Drevarr/GW2-WVW-Teams)).
 
-- To rename a team or add **EU** teams (`12xxx`), use the team-name map under
-  **Settings → WvW Tracking** (keyed by team id) — it overrides the built-ins.
-- Anything still unmapped falls back to the legacy `/v2/worlds` name, then to
+- Teams get renamed at relinks; to override a name, use the team-name map under
+  **Settings → WvW Tracking** (keyed by team id) — it wins over the built-ins.
+- Anything unmapped falls back to the legacy `/v2/worlds` name, then to
   `Team {id}`, so nothing renders blank.
 
 ## Development

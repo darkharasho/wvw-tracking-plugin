@@ -21,9 +21,11 @@ final class WvwNamesTest extends TestCase {
         $this->assertSame('Raw Str', WVW_Names::resolve(2001, [], ['2001' => 'Raw Str']));
     }
     public function test_built_in_wr_default_used() {
-        // World Restructuring team id with no admin/raw entry -> built-in NA name.
-        $this->assertSame("Rall's Rest", WVW_Names::resolve(11002, [], []));
-        $this->assertSame('Yohlon Haven', WVW_Names::resolve(11004, [], []));
+        // World Restructuring team id with no admin/raw entry -> built-in name.
+        $this->assertSame("Rall's Rest", WVW_Names::resolve(11002, [], []));   // NA
+        $this->assertSame('Yohlon Haven', WVW_Names::resolve(11004, [], []));  // NA
+        $this->assertSame('Skrittsburgh', WVW_Names::resolve(12001, [], []));  // EU
+        $this->assertSame("Fortune's Vale", WVW_Names::resolve(12002, [], [])); // EU
     }
     public function test_friendly_overrides_wr_default() {
         $this->assertSame('My Team', WVW_Names::resolve(11002, [11002 => 'My Team'], []));
