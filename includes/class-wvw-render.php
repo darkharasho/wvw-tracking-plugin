@@ -85,8 +85,8 @@ class WVW_Render {
 
     private static function move_label($move) {
         switch ($move) {
-            case 'up':   return ['wvw-move-up', '▲ ' . __('Moves Up', 'wvw-tracking')];
-            case 'down': return ['wvw-move-down', '▼ ' . __('Moves Down', 'wvw-tracking')];
+            case 'up':   return ['wvw-move-up', '▲ ' . __('Up', 'wvw-tracking')];
+            case 'down': return ['wvw-move-down', '▼ ' . __('Down', 'wvw-tracking')];
             default:     return ['wvw-move-stays', '— ' . __('Stays', 'wvw-tracking')];
         }
     }
