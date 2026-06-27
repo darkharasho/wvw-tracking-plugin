@@ -20,8 +20,13 @@ WordPress plugin: GW2 World vs World matchup shortcodes.
 Note: `PPK` is computed as kill-efficiency `kills / (kills + deaths)` — the GW2
 API exposes no PPK field; adjust `WVW_Data::ppk()` if you want a different formula.
 
-Match-scoped shortcodes accept `team="2001"` (auto-follows up/down tiers),
-`match="2-1"` (fixed tier), or fall back to the default team in settings.
+Match-scoped shortcodes (`score`, `ppt`, `skirmish`, `kills`, `objectives`)
+pick their match by, in order of precedence:
+
+- `match="2-1"` — fixed match id (region digit + tier; `1`=NA, `2`=EU), or
+- `region="na" tier="1"` — friendly equivalent of the match id, or
+- `team="2001"` — auto-follow a team up/down the tiers, or
+- the **default team** from settings when nothing is given.
 
 ## Team names (World Restructuring)
 

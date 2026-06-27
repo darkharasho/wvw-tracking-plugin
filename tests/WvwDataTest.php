@@ -26,6 +26,14 @@ final class WvwDataTest extends TestCase {
         $this->assertSame(1001, WVW_Data::team_id($this->match('1-1'), 'red'));
     }
 
+    public function test_match_id_from_region_and_tier() {
+        $this->assertSame('1-1', WVW_Data::match_id_from('na', 1));
+        $this->assertSame('2-3', WVW_Data::match_id_from('eu', 3));
+        $this->assertSame('2-2', WVW_Data::match_id_from('EU', '2')); // case + string tier
+        $this->assertSame('1-4', WVW_Data::match_id_from('anything-else', 4)); // non-eu -> NA
+        $this->assertSame('', WVW_Data::match_id_from('na', 0)); // invalid tier
+    }
+
     public function test_kills() {
         $this->assertSame(
             ['red' => 1000, 'green' => 3000, 'blue' => 2000],

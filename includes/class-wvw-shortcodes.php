@@ -12,14 +12,28 @@ class WVW_Shortcodes {
         add_shortcode('wvw_standings',  ['WVW_Shortcodes', 'standings']);
     }
 
+    /**
+     * Resolve a match-scoped shortcode's attributes to {match, team}. A friendly
+     * region+tier pair (e.g. region="na" tier="1") is converted to a match id
+     * ("1-1") when no explicit match is given.
+     */
+    private static function effective($atts) {
+        $a = shortcode_atts(['team' => '', 'match' => '', 'region' => '', 'tier' => ''], $atts);
+        $match = $a['match'];
+        if ($match === '' && $a['region'] !== '' && $a['tier'] !== '') {
+            $match = WVW_Data::match_id_from($a['region'], $a['tier']);
+        }
+        return ['match' => $match, 'team' => $a['team']];
+    }
+
     private static function resolve_payload($atts) {
-        $a = shortcode_atts(['team' => '', 'match' => ''], $atts);
-        if ($a['team'] === '' && $a['match'] === '') {
+        $e = self::effective($atts);
+        if ($e['match'] === '' && $e['team'] === '') {
             $settings = get_option('wvw_settings', []);
-            $a['team'] = isset($settings['default_team']) ? $settings['default_team'] : '';
+            $e['team'] = isset($settings['default_team']) ? $settings['default_team'] : '';
         }
         $matches = WVW_Api::get_matches();
-        $m = WVW_Data::find_match($matches, ['match' => $a['match'], 'team' => $a['team']]);
+        $m = WVW_Data::find_match($matches, ['match' => $e['match'], 'team' => $e['team']]);
         if (!$m) {
             return null;
         }
@@ -27,10 +41,10 @@ class WVW_Shortcodes {
     }
 
     private static function wrap($html, $type, $atts) {
-        $a = shortcode_atts(['team' => '', 'match' => ''], $atts);
+        $e = self::effective($atts);
         return '<div class="wvw-container" data-wvw-type="' . esc_attr($type) . '"'
-            . ' data-wvw-team="' . esc_attr($a['team']) . '"'
-            . ' data-wvw-match="' . esc_attr($a['match']) . '">' . $html . '</div>';
+            . ' data-wvw-team="' . esc_attr($e['team']) . '"'
+            . ' data-wvw-match="' . esc_attr($e['match']) . '">' . $html . '</div>';
     }
 
     public static function score($atts) {

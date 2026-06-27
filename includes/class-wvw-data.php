@@ -117,6 +117,19 @@ class WVW_Data {
         return $pos === false ? 0 : (int) substr($id, $pos + 1);
     }
 
+    /**
+     * Build a match id from a friendly region + tier, e.g. ('na', 1) -> "1-1",
+     * ('eu', 3) -> "2-3". Returns '' for a non-positive tier.
+     */
+    public static function match_id_from($region, $tier) {
+        $tier = (int) $tier;
+        if ($tier <= 0) {
+            return '';
+        }
+        $prefix = (strtolower((string) $region) === 'eu') ? '2' : '1';
+        return $prefix . '-' . $tier;
+    }
+
     /** Restructured-team IDs (World Restructuring) start at this id. */
     const WR_TEAM_ID_MIN = 10000;
 
