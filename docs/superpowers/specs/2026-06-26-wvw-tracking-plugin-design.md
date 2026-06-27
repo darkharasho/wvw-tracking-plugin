@@ -21,10 +21,9 @@ low-maintenance widget rather than a full analytics site.
 
 ## Non-Goals (v1)
 
-- Kills/deaths (K/D) display — data exists but is deferred; presenting it well
-  is more effort than it's worth for a basics widget.
 - Detailed per-objective maps/metadata beyond simple counts.
-- Historical data, charts, or trends.
+- Historical data, charts, or trends over time.
+- Per-player or per-guild breakdowns.
 - Multi-site / multi-language concerns beyond standard WP i18n hooks.
 
 ## Architecture
@@ -66,17 +65,36 @@ GW2 API ──(WP-Cron / stale-on-request)──> transient (blob)
 
 ## Shortcodes
 
-Four **match-scoped** shortcodes plus one **region** shortcode.
+Five **match-scoped** shortcodes plus one **region** shortcode.
 
 | Shortcode | Renders |
 |---|---|
 | `[wvw_score]` | Three-way running war-score total per team |
 | `[wvw_ppt]` | Current points-per-tick per team |
 | `[wvw_skirmish]` | Current skirmish standings |
+| `[wvw_kills]` | Kills, deaths, and KDR per team |
 | `[wvw_objectives]` | Counts of camps / towers / keeps / SMC per team |
-| `[wvw_standings region="na"]` | Full region ladder, all tiers (wvw.gg-style table) |
+| `[wvw_standings region="na"]` | Full region ladder, all tiers — the wvw.gg-style table |
 
-### Match selection (the four match-scoped shortcodes)
+### Region ladder columns (`[wvw_standings]`)
+
+The ladder mirrors wvw.gg/matches. For each tier (match), the three teams are
+ranked **1st / 2nd / 3rd by victory points** and each row shows, colored by the
+team's WvW side (red / green / blue):
+
+| Column | Source |
+|---|---|
+| Tier | match id (`2-1` → tier 1) |
+| Rank + Team | VP rank badge + friendly team name |
+| Skirmish Score | latest skirmish scores |
+| Kills | API `kills` per team |
+| Deaths | API `deaths` per team |
+| KDR | derived: `kills / deaths` |
+| PPK | derived: `kills / (kills + deaths)` as a percentage (best-effort interpretation of wvw.gg's PPK; the API has no PPK field; isolated in one function for easy correction) |
+| VP | API `victory_points` per team |
+| Move | derived rank movement: **1st → moves up** (top tier stays), **2nd → stays**, **3rd → moves down** (bottom tier stays) |
+
+### Match selection (the match-scoped shortcodes)
 
 Each accepts attributes, resolved in this precedence:
 
@@ -91,8 +109,10 @@ If `match` is supplied it wins; otherwise `team`; otherwise the default team.
 
 ### Region shortcode
 
-`[wvw_standings region="na|eu"]` renders all tiers for one region as a table.
-Defaults to the **default region** from settings if `region` is omitted.
+`[wvw_standings region="na|eu"]` renders all tiers for one region as the ladder
+table described above. Defaults to the **default region** from settings if
+`region` is omitted. Rank movement needs region context (which tier is top /
+bottom), so it is computed when the region's tiers are assembled, not per match.
 
 ## Admin Settings Page
 
@@ -140,14 +160,18 @@ result is never blank.
   - score extraction
   - points-per-tick extraction
   - skirmish standings extraction
+  - kills / deaths / victory-points extraction
+  - KDR and PPK derivation
   - objective counts (camps / towers / keeps / SMC) per team
   - team auto-follow (find the match containing a given team)
+  - VP ranking (1st/2nd/3rd) and rank-movement (up/stays/down with tier bounds)
   - friendly-name mapping incl. fallback to raw name
 - Fixtures captured once from a real API response and committed.
 
 ## Open Questions / Future
 
-- K/D shortcode (deferred, data already available).
+- Confirm the exact PPK formula against wvw.gg (the API exposes no PPK field;
+  v1 uses kill-efficiency `kills / (kills + deaths)` in one isolated function).
 - Detailed named-objective view (needs the separate objectives metadata
   endpoint).
 - Caching strategy could later split per-region if `ids=all` payload size
