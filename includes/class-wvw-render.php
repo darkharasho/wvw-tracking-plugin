@@ -24,10 +24,34 @@ class WVW_Render {
                 . '<span class="wvw-value" data-team="' . esc_attr($c) . '">' . esc_html(number_format_i18n($val)) . '</span>'
                 . '</div>';
         }
-        $label = self::label($type);
         return '<div class="wvw-widget wvw-' . esc_attr($type) . '">'
-            . '<div class="wvw-widget-label">' . esc_html($label) . '</div>'
+            . self::header(self::label($type), $p)
             . $rows . '</div>';
+    }
+
+    /** Card header with the widget title and, when known, a tier tag. */
+    private static function header($title, array $p) {
+        $tier = isset($p['tier']) ? $p['tier'] : '';
+        $tag = '';
+        if ($tier !== '' && (int) $tier > 0) {
+            $tag = '<span class="wvw-tier-tag">'
+                . esc_html(sprintf(__('Tier %s', 'wvw-tracking'), $tier)) . '</span>';
+        }
+        return '<div class="wvw-widget-label">' . esc_html($title) . $tag . '</div>';
+    }
+
+    /** Render one team's card row: colored name + a right-aligned set of stats. */
+    private static function team_row($color, $name, $stats) {
+        $cells = '';
+        foreach ($stats as $s) {
+            $cells .= '<span class="wvw-stat">'
+                . '<span class="wvw-stat-label">' . esc_html($s['label']) . '</span>'
+                . '<span class="wvw-stat-val" data-team="' . esc_attr($color) . '" data-' . esc_attr($s['attr']) . '="' . esc_attr($s['key']) . '">'
+                . esc_html($s['value']) . '</span></span>';
+        }
+        return '<div class="wvw-team wvw-' . esc_attr($color) . '">'
+            . '<span class="wvw-name">' . esc_html($name) . '</span>'
+            . '<span class="wvw-stats">' . $cells . '</span></div>';
     }
 
     private static function label($type) {
@@ -39,29 +63,30 @@ class WVW_Render {
         }
     }
 
-    /** Objectives: per team, counts of each structure type. */
+    /** Objectives: per team, counts of each structure type — score-card style. */
     public static function objectives(array $p) {
         $obj = isset($p['objectives']) ? $p['objectives'] : [];
-        $types = ['Camp', 'Tower', 'Keep', 'Castle'];
+        $types = [
+            'Camp'   => __('Camps', 'wvw-tracking'),
+            'Tower'  => __('Towers', 'wvw-tracking'),
+            'Keep'   => __('Keeps', 'wvw-tracking'),
+            'Castle' => __('SMC', 'wvw-tracking'),
+        ];
         $rows = '';
         foreach (self::order() as $c) {
             $name = isset($p['names'][$c]) ? $p['names'][$c] : ucfirst($c);
-            $cells = '';
-            foreach ($types as $t) {
-                $n = isset($obj[$c][$t]) ? (int) $obj[$c][$t] : 0;
-                $cells .= '<td class="wvw-obj-' . esc_attr(strtolower($t)) . '" data-team="' . esc_attr($c) . '" data-type="' . esc_attr($t) . '">' . esc_html($n) . '</td>';
+            $stats = [];
+            foreach ($types as $key => $label) {
+                $n = isset($obj[$c][$key]) ? (int) $obj[$c][$key] : 0;
+                $stats[] = ['label' => $label, 'attr' => 'type', 'key' => $key, 'value' => $n];
             }
-            $rows .= '<tr class="wvw-' . esc_attr($c) . '"><th>' . esc_html($name) . '</th>' . $cells . '</tr>';
+            $rows .= self::team_row($c, $name, $stats);
         }
-        $head = '<tr><th></th><th>' . esc_html__('Camps', 'wvw-tracking') . '</th><th>'
-            . esc_html__('Towers', 'wvw-tracking') . '</th><th>'
-            . esc_html__('Keeps', 'wvw-tracking') . '</th><th>'
-            . esc_html__('SMC', 'wvw-tracking') . '</th></tr>';
-        return '<div class="wvw-widget wvw-objectives"><table>'
-            . '<thead>' . $head . '</thead><tbody>' . $rows . '</tbody></table></div>';
+        return '<div class="wvw-widget wvw-objectives">'
+            . self::header(__('Objectives', 'wvw-tracking'), $p) . $rows . '</div>';
     }
 
-    /** Kills / deaths / KDR per team. */
+    /** Kills / deaths / KDR per team — score-card style. */
     public static function kills(array $p) {
         $rows = '';
         foreach (self::order() as $c) {
@@ -69,18 +94,15 @@ class WVW_Render {
             $k = isset($p['kills'][$c]) ? (int) $p['kills'][$c] : 0;
             $d = isset($p['deaths'][$c]) ? (int) $p['deaths'][$c] : 0;
             $kdr = isset($p['kdr'][$c]) ? $p['kdr'][$c] : 0;
-            $rows .= '<tr class="wvw-' . esc_attr($c) . '">'
-                . '<th>' . esc_html($name) . '</th>'
-                . '<td data-team="' . esc_attr($c) . '" data-field="kills">' . esc_html(number_format_i18n($k)) . '</td>'
-                . '<td data-team="' . esc_attr($c) . '" data-field="deaths">' . esc_html(number_format_i18n($d)) . '</td>'
-                . '<td data-team="' . esc_attr($c) . '" data-field="kdr">' . esc_html(number_format_i18n($kdr, 2)) . '</td>'
-                . '</tr>';
+            $stats = [
+                ['label' => __('Kills', 'wvw-tracking'),  'attr' => 'field', 'key' => 'kills',  'value' => number_format_i18n($k)],
+                ['label' => __('Deaths', 'wvw-tracking'), 'attr' => 'field', 'key' => 'deaths', 'value' => number_format_i18n($d)],
+                ['label' => __('KDR', 'wvw-tracking'),    'attr' => 'field', 'key' => 'kdr',    'value' => number_format_i18n($kdr, 2)],
+            ];
+            $rows .= self::team_row($c, $name, $stats);
         }
-        $head = '<tr><th></th><th>' . esc_html__('Kills', 'wvw-tracking') . '</th><th>'
-            . esc_html__('Deaths', 'wvw-tracking') . '</th><th>'
-            . esc_html__('KDR', 'wvw-tracking') . '</th></tr>';
-        return '<div class="wvw-widget wvw-kills"><table><thead>' . $head
-            . '</thead><tbody>' . $rows . '</tbody></table></div>';
+        return '<div class="wvw-widget wvw-kills">'
+            . self::header(__('Kills', 'wvw-tracking'), $p) . $rows . '</div>';
     }
 
     private static function move_label($move) {

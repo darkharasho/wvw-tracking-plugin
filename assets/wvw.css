@@ -1,6 +1,13 @@
 .wvw-widget { font-family: inherit; margin: 1em 0; border: 1px solid #e2e2e2; border-radius: 8px; overflow: hidden; }
-.wvw-widget-label { font-weight: 600; padding: .5em .75em; background: #f6f6f6; border-bottom: 1px solid #e2e2e2; }
-.wvw-team { display: flex; justify-content: space-between; padding: .5em .75em; border-bottom: 1px solid #f0f0f0; }
+.wvw-widget-label { display: flex; justify-content: space-between; align-items: center;
+  font-weight: 600; padding: .5em .75em; background: #f6f6f6; border-bottom: 1px solid #e2e2e2; }
+.wvw-tier-tag { font-size: .78em; font-weight: 600; color: #555; background: #e6e6e6;
+  padding: .1em .55em; border-radius: 999px; }
+.wvw-team { display: flex; justify-content: space-between; align-items: center; gap: 1em; padding: .5em .75em; border-bottom: 1px solid #f0f0f0; }
+.wvw-stats { display: flex; gap: 1em; align-items: flex-end; }
+.wvw-stat { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.15; }
+.wvw-stat-label { font-size: .62em; text-transform: uppercase; letter-spacing: .03em; color: #999; }
+.wvw-stat-val { font-variant-numeric: tabular-nums; font-weight: 600; }
 .wvw-team:last-child { border-bottom: 0; }
 .wvw-team.wvw-red   { border-left: 4px solid #c0392b; }
 .wvw-team.wvw-green { border-left: 4px solid #27ae60; }

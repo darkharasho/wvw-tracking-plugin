@@ -20,16 +20,16 @@
       var map = payload[key];
       if (map && map[team] != null) { node.textContent = Number(map[team]).toLocaleString(); }
     });
-    // kills widget: td[data-team][data-field] where field is a payload key (kills/deaths/kdr)
-    el.querySelectorAll('td[data-team][data-field]').forEach(function (node) {
+    // kills widget: [data-team][data-field] where field is a payload key (kills/deaths/kdr)
+    el.querySelectorAll('[data-team][data-field]').forEach(function (node) {
       var team = node.getAttribute('data-team');
       var field = node.getAttribute('data-field');
       if (payload[field] && payload[field][team] != null) {
         node.textContent = Number(payload[field][team]).toLocaleString();
       }
     });
-    // objectives: td[data-team][data-type] where type is a structure type
-    el.querySelectorAll('td[data-team][data-type]').forEach(function (node) {
+    // objectives: [data-team][data-type] where type is a structure type
+    el.querySelectorAll('[data-team][data-type]').forEach(function (node) {
       var team = node.getAttribute('data-team');
       var type = node.getAttribute('data-type');
       if (payload.objectives && payload.objectives[team]) {
