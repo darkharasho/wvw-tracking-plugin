@@ -2,6 +2,20 @@
 
 WordPress plugin: GW2 World vs World matchup shortcodes.
 
+## Screenshots
+
+Region standings ladder (`[wvw_standings]`):
+
+![WvW region standings](docs/screenshots/standings.png)
+
+Match widgets — war score, points per tick, skirmish, kills, and objectives:
+
+![War score](docs/screenshots/score.png)
+![Points per tick](docs/screenshots/ppt.png)
+![Skirmish](docs/screenshots/skirmish.png)
+![Kills, deaths, and KDR](docs/screenshots/kills.png)
+![Objectives](docs/screenshots/objectives.png)
+
 ## Install
 1. Copy this folder into `wp-content/plugins/`.
 2. Activate **WvW Tracking** in Plugins.
