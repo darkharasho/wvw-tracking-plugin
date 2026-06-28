@@ -35,7 +35,8 @@ add_action('admin_init', ['WVW_Settings', 'register']);
 add_action('rest_api_init', ['WVW_Rest', 'register']);
 add_action('init', ['WVW_Shortcodes', 'register']);
 add_action('wp_enqueue_scripts', function () {
-    wp_enqueue_style('wvw-tracking', WVW_URL . 'assets/wvw.css', [], WVW_VERSION);
+    wp_enqueue_style('wvw-fonts', 'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap', [], null);
+    wp_enqueue_style('wvw-tracking', WVW_URL . 'assets/wvw.css', ['wvw-fonts'], WVW_VERSION);
     wp_enqueue_script('wvw-tracking', WVW_URL . 'assets/wvw.js', [], WVW_VERSION, true);
     wp_localize_script('wvw-tracking', 'wvwConfig', [
         'root'     => esc_url_raw(rest_url()),

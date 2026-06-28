@@ -105,19 +105,46 @@ class WVW_Render {
             . self::header(__('Kills', 'wvw-tracking'), $p) . $rows . '</div>';
     }
 
-    private static function move_label($move) {
+    /** Region display name for the standings header (empty for unknown/blank). */
+    private static function region_title($region) {
+        switch (strtolower((string) $region)) {
+            case 'na': return __('North America', 'wvw-tracking');
+            case 'eu': return __('Europe', 'wvw-tracking');
+            default:   return $region !== '' ? (string) $region : '';
+        }
+    }
+
+    /**
+     * Move indicator: [css class, label, inline SVG]. The arrows share one
+     * geometry (the "down" glyph is the "up" glyph mirrored) so they read as a
+     * matched pair; the SVG is trusted static markup, emitted raw.
+     */
+    private static function move_icon($move) {
+        $svg = function ($paths) {
+            return '<svg class="wvw-move-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"'
+                . ' stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+                . $paths . '</svg>';
+        };
         switch ($move) {
-            case 'up':   return ['wvw-move-up', '▲ ' . __('Moves Up', 'wvw-tracking')];
-            case 'down': return ['wvw-move-down', '▼ ' . __('Moves Down', 'wvw-tracking')];
-            default:     return ['wvw-move-stays', '— ' . __('Stays', 'wvw-tracking')];
+            case 'up':
+                return ['wvw-move-up', __('Up', 'wvw-tracking'), $svg('<path d="M12 7V18"/><path d="M5 12L12 5L19 12"/>')];
+            case 'down':
+                return ['wvw-move-down', __('Down', 'wvw-tracking'), $svg('<path d="M12 17V6"/><path d="M5 12L12 19L19 12"/>')];
+            default:
+                return ['wvw-move-stays', __('Stays', 'wvw-tracking'), $svg('<path d="M5 12H19"/>')];
         }
     }
 
     /** Full wvw.gg-style region ladder. One <tr> per team, grouped by tier. */
-    public static function standings(array $payloads) {
+    public static function standings(array $payloads, $region = '') {
         if (empty($payloads)) {
             return self::unavailable();
         }
+        $regionName = self::region_title($region);
+        $title = $regionName !== ''
+            ? $regionName . ' · ' . __('World vs World', 'wvw-tracking')
+            : __('World vs World', 'wvw-tracking');
+        $header = '<div class="wvw-widget-label">' . esc_html($title) . '</div>';
         $head = '<thead><tr>'
             . '<th>' . esc_html__('Tier', 'wvw-tracking') . '</th>'
             . '<th>' . esc_html__('Team', 'wvw-tracking') . '</th>'
@@ -131,11 +158,6 @@ class WVW_Render {
             . '</tr></thead>';
 
         $body = '';
-        $rankLabels = [
-            0 => __('1st', 'wvw-tracking'),
-            1 => __('2nd', 'wvw-tracking'),
-            2 => __('3rd', 'wvw-tracking'),
-        ];
         foreach ($payloads as $p) {
             $ranked = isset($p['rank']) ? $p['rank'] : self::order();
             $first = true;
@@ -148,26 +170,31 @@ class WVW_Render {
                 $ppk  = isset($p['ppk'][$c]) ? $p['ppk'][$c] : 0;
                 $vp   = isset($p['vp'][$c]) ? (int) $p['vp'][$c] : 0;
                 $mv   = isset($p['move'][$c]) ? $p['move'][$c] : 'stays';
-                list($mvClass, $mvText) = self::move_label($mv);
+                list($mvClass, $mvText, $mvSvg) = self::move_icon($mv);
                 $tierCell = $first
-                    ? '<th class="wvw-tier" rowspan="' . count($ranked) . '">' . esc_html($p['tier']) . '</th>'
+                    ? '<th class="wvw-tier" rowspan="' . count($ranked) . '">' . esc_html($p['tier'])
+                        . '<small>' . esc_html__('Tier', 'wvw-tracking') . '</small></th>'
                     : '';
-                $rankLabel = isset($rankLabels[$i]) ? $rankLabels[$i] : ($i + 1);
-                $body .= '<tr class="wvw-row wvw-' . esc_attr($c) . '">'
+                $rankLabel = $i + 1;
+                $rowClass = 'wvw-row wvw-' . esc_attr($c) . ($first ? ' wvw-tier-start' : '');
+                $body .= '<tr class="' . $rowClass . '">'
                     . $tierCell
-                    . '<td class="wvw-team-cell"><span class="wvw-rank wvw-' . esc_attr($c) . '">' . esc_html($rankLabel) . '</span> '
-                    . '<span class="wvw-name">' . esc_html($name) . '</span></td>'
+                    . '<td class="wvw-team-cell"><span class="wvw-team-inner">'
+                    . '<span class="wvw-rank wvw-' . esc_attr($c) . '">' . esc_html($rankLabel) . '</span>'
+                    . '<span class="wvw-name">' . esc_html($name) . '</span></span></td>'
                     . '<td>' . esc_html(number_format_i18n($sk)) . '</td>'
                     . '<td>' . esc_html(number_format_i18n($k)) . '</td>'
-                    . '<td>' . esc_html(number_format_i18n($d)) . '</td>'
+                    . '<td class="wvw-dim">' . esc_html(number_format_i18n($d)) . '</td>'
                     . '<td>' . esc_html(number_format_i18n($kdr, 2)) . '</td>'
                     . '<td>' . esc_html(number_format_i18n($ppk, 2)) . '%</td>'
                     . '<td>' . esc_html(number_format_i18n($vp)) . '</td>'
-                    . '<td class="' . esc_attr($mvClass) . '">' . esc_html($mvText) . '</td>'
+                    . '<td class="wvw-move-cell"><span class="wvw-move ' . esc_attr($mvClass) . '">'
+                    . $mvSvg . esc_html($mvText) . '</span></td>'
                     . '</tr>';
                 $first = false;
             }
         }
-        return '<div class="wvw-widget wvw-standings"><table>' . $head . '<tbody>' . $body . '</tbody></table></div>';
+        return '<div class="wvw-widget wvw-standings">' . $header
+            . '<div class="wvw-standings-scroll"><table>' . $head . '<tbody>' . $body . '</tbody></table></div></div>';
     }
 }

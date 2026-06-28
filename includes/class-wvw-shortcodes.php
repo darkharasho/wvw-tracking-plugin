@@ -82,6 +82,6 @@ class WVW_Shortcodes {
         $prefix = (strtolower($region) === 'eu') ? '2-' : '1-';
         $payloads = WVW_Rest::build_region_payloads($prefix);
         return '<div class="wvw-container" data-wvw-type="standings" data-wvw-region="'
-            . esc_attr($region) . '">' . WVW_Render::standings($payloads) . '</div>';
+            . esc_attr($region) . '">' . WVW_Render::standings($payloads, $region) . '</div>';
     }
 }
